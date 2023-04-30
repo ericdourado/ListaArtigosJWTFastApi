@@ -40,9 +40,10 @@ async def get_current_user(db: Session = Depends(get_session), token: str = Depe
         raise credential_exception
     
     async with db as session:
-        query = select(UsuarioModel).filter(UsuarioModel== int(token_data.username))
+        query = select(UsuarioModel).filter(UsuarioModel.id == int(token_data.username))
         result = await session.execute(query)
         usuario: UsuarioModel = result.scalars().unique().one_or_none()
+        
         if usuario is None:
             raise credential_exception
         else:

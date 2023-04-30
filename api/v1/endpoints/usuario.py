@@ -94,4 +94,5 @@ async def def_login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncS
     if not usuario:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail='Dados de acesso incorretos')
+    
     return JSONResponse(content={'acess_token': criar_token_acesso(sub=usuario.id), 'token_type': 'bearer'}, status_code=status.HTTP_200_OK)

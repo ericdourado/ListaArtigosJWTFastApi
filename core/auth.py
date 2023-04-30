@@ -41,5 +41,5 @@ def criar_token_acesso(sub: str) -> str:
     return _criar_token(
         tipoToken='acess_token'
         ,tempo_vida=timedelta(minutes=settings.ACESS_TOKEN_EXPIRE_MINUTES)
-        ,sub = sub
+        ,subject = sub
     )

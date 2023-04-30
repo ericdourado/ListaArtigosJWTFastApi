@@ -43,8 +43,8 @@ async def get_artigo(id: int, db: AsyncSession = Depends(get_session)):
                                 status_code=status.HTTP_404_NOT_FOUND)
 
 
-@router.put('/{id}', response_model=ArtigoSchema, status_code=status.HTTP_202_ACCEPTED)
-async def put_artigo(id: int, artigo: ArtigoSchema, db: AsyncSession = Depends(get_session), usuario_logado: UsuarioModel = Depends(get_session)):
+@router.put('/{id}', response_model= ArtigoSchema,status_code=status.HTTP_202_ACCEPTED)
+async def put_artigo(id: int, artigo: ArtigoSchema, db: AsyncSession = Depends(get_session), usuario_logado: UsuarioModel = Depends(get_current_user)):
     async with db as session:
         query = select(ArtigoModel).filter(ArtigoModel.id == id)
         result = await session.execute(query)
@@ -56,10 +56,8 @@ async def put_artigo(id: int, artigo: ArtigoSchema, db: AsyncSession = Depends(g
                 artigo_update.descricao = artigo.descricao
             if artigo.url_fonte:
                 artigo_update.url_fonte = artigo.url_fonte
-            if artigo.titulo:
-                artigo_update.titulo = artigo.titulo
             if usuario_logado != artigo_update.usuario_id:
-                artigo_update.usuario_id = usuario_logado
+                artigo_update.usuario_id = usuario_logado.id
             await session.commit()
             return artigo_update
         else:
@@ -67,7 +65,7 @@ async def put_artigo(id: int, artigo: ArtigoSchema, db: AsyncSession = Depends(g
                                 status_code=status.HTTP_404_NOT_FOUND)
 
 
-@router.put('/{id}', status_code=status.HTTP_204_NO_CONTENT)
+@router.delete('/{id}', status_code=status.HTTP_204_NO_CONTENT)
 async def delete_artigo(id: int, db: AsyncSession = Depends(get_session), usuario_logado: UsuarioModel = Depends(get_session)):
     async with db as session:
         query = select(ArtigoModel).filter(ArtigoModel.id == id).filter(
